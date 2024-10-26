@@ -1,0 +1,20 @@
+#! /bin/bash
+
+# Sees if is a file in the 1st argument
+if [[ -f "$1" ]]; then
+    json_content=$(<"$1")
+    # Count the number of keys in the JSON
+    item_count=$(echo "$json_content" | grep '"[^"]*":' | wc -l)
+
+    # Get a random number
+    random_number=$(shuf -i 1-"$item_count" -n 1)
+
+    # Gets the random value
+    random_value=$(echo "$json_content" | grep -oP "\"$random_number\": \"[^\"]*\"" | awk -F': ' '{print $2}' | tr -d '"')
+
+    # Shows the value in the keys shuffled
+    echo "You got: $random_value"
+else
+    echo "You must put a file in the first argument!"
+    echo "bashrandomizer /first/argument/path/to/file/json.json"
+fi
